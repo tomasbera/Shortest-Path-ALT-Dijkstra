@@ -4,9 +4,9 @@ import java.util.ArrayList;
 public class Interface {
 
     public static void main(String[] args) throws IOException {
-        File nodeFile = new File("noder.txt");
-        File edgeFile = new File("kanter.txt");
-        File poiFile = new File("interessepkt.txt");
+        File nodeFile = new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/noder.txt");
+        File edgeFile = new File("Shortest-Path-ALT-Dijkstra/kanter.txt");
+        File poiFile = new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/interessepkt.txt");
 
 
 
