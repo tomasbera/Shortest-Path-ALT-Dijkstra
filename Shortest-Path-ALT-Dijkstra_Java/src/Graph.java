@@ -182,13 +182,13 @@ public class Graph {
         Node []preNodes;
         preNodes = findThreePOI();
         readEdgesRev(engFile);
-        runDijkstraALT(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
+        runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
         readEdges(engFile);
-        runDijkstraALT(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
+        runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
 
     }
 
-    public void runDijkstraALT(Node[] preNodes, File outputFile) throws IOException {
+    public void runToFile(Node[] preNodes, File outputFile) throws IOException {
         FileWriter fileWriter = new FileWriter(outputFile.getAbsolutePath());
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(preNodes.length);
