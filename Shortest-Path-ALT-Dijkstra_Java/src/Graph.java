@@ -11,16 +11,14 @@ public class Graph {
     PriorityQueue<Node> pq;
 
     public Graph (File nodeFile, File edgeFile, File poiFile) throws IOException {
-        BufferedReader brn = new BufferedReader(new FileReader(nodeFile));
-        BufferedReader bre = new BufferedReader(new FileReader(edgeFile));
-        BufferedReader brp = new BufferedReader(new FileReader(poiFile));
-
-        readNodes(brn);
-        readEdges(bre);
-        readPointsOfInterest(brp);
+        readNodes(nodeFile);
+        readEdges(edgeFile);
+        readPointsOfInterest(poiFile);
     }
 
-    public void readNodes(BufferedReader br)throws IOException {
+    public void readNodes(File nodeFile)throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(nodeFile));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
         this.vertices = Integer.parseInt(st.nextToken());
         listOfNodes = new Node[vertices];
@@ -40,7 +38,8 @@ public class Graph {
         }
     }
 
-    public void readEdges(BufferedReader br)throws IOException {
+    public void readEdges(File edgeFile)throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(edgeFile));
         StringTokenizer st = new StringTokenizer(br.readLine());
         this.edges = Integer.parseInt(st.nextToken());
         listOfEdges = new Edge[edges];
@@ -56,7 +55,24 @@ public class Graph {
         }
     }
 
-    public void readPointsOfInterest(BufferedReader br)throws IOException{
+    public void readEdgesRev(File edgeFile)throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(edgeFile));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        st.nextToken();
+
+        for (int i = 0; i < edges; i++) {
+            st = new StringTokenizer(br.readLine());
+            int fromNode = Integer.parseInt(st.nextToken());
+            int toNode = Integer.parseInt(st.nextToken());
+            int drivingTime = Integer.parseInt(st.nextToken());
+            st.nextToken();
+            st.nextToken();
+            listOfNodes[toNode].firstEdge = new Edge(listOfNodes[toNode].firstEdge, listOfNodes[fromNode], drivingTime);
+        }
+    }
+
+    public void readPointsOfInterest(File poiFile)throws IOException{
+        BufferedReader br = new BufferedReader(new FileReader(poiFile));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int numOfLocations = Integer.parseInt(st.nextToken());
 
@@ -92,6 +108,21 @@ public class Graph {
         return visitedNodes;
     }
 
+    public void dijkstraPrePos(Node s){
+        if (s != null){
+            initPrev(s);
+        }
+        makePrio();
+        pq.add(s);
+
+        while (!this.pq.isEmpty()){
+            Node n = pq.poll();
+            for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
+                shorten(n, we);
+            }
+        }
+    }
+
     public void initPrev(Node s){
         for (int i = vertices; i-->0;) {
             listOfNodes[i].d = new Prev();
@@ -102,16 +133,20 @@ public class Graph {
     public Node[] dijkstraPOI(Node s, int type){
         Node []listOfTypeNods = new Node[8];
         int count = 0;
+        if (s != null){
+            initPrev(s);
+        }
         makePrio();
         pq.add(s);
 
-        while (!this.pq.isEmpty() & count < 8){
+        while (!this.pq.isEmpty()){
             Node n = pq.poll();
-
             if (n.code == type) {
-                count++;
                 listOfTypeNods[count] = n;
+                count++;
             }
+
+            if (count==8)break;
 
             for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
                 shorten(n, we);
