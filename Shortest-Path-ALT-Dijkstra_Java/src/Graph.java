@@ -192,29 +192,29 @@ public class Graph {
         runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
         readEdges(engFile);
         runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
-
     }
 
     public void runToFile(Node[] preNodes, File outputFile) throws IOException {
         FileWriter fileWriter = new FileWriter(outputFile.getAbsolutePath());
         StringBuilder stringBuilder = new StringBuilder();
+        BufferedWriter bw = new BufferedWriter(fileWriter);
         stringBuilder.append(preNodes.length);
         stringBuilder.append(" ");
         stringBuilder.append(nodeCount);
         stringBuilder.append("\n");
 
-        for (int i = 0; i < preNodes.length; i++) {
-            System.out.println(preNodes[i].nodeNum);
-            stringBuilder.append(preNodes[i].nodeNum);
-            dijkstraPrePos(preNodes[i]);
+        for (Node preNode : preNodes) {
+            System.out.println(preNode.nodeNum);
+            stringBuilder.append(preNode.nodeNum);
+            dijkstraPrePos(preNode);
             for (int j = 0; j < nodeCount; j++) {
                 stringBuilder.append(" ");
-                stringBuilder.append(listOfNodes[i].d.dist);
+                stringBuilder.append(listOfNodes[j].d.dist);
             }
             stringBuilder.append("\n");
+            bw = new BufferedWriter(fileWriter);
+            bw.write(stringBuilder.toString());
         }
-        BufferedWriter bw = new BufferedWriter(fileWriter);
-        bw.write(stringBuilder.toString());
         bw.close();
     }
 }
