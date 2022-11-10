@@ -8,13 +8,10 @@ public class Node {
     int code = -1;
     boolean visited = false;
 
-    public Node(Edge firstEdge, Prev d, int nodeNum, double latitude, double longitude, String POI) {
-        this.firstEdge = firstEdge;
-        this.d = d;
+    public Node(int nodeNum, double latitude, double longitude) {
         this.nodeNum = nodeNum;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.POI = POI;
     }
 
     public Node(){

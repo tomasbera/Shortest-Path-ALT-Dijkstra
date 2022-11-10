@@ -3,9 +3,9 @@ public class Edge {
     Node to;
     int weight;
 
-    public Edge(Edge next, Node to, int weight) {
-        this.nextEdge = next;
+    public Edge(Node to,Edge next, int weight) {
         this.to = to;
+        this.nextEdge = next;
         this.weight = weight;
     }
 }
