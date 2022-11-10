@@ -5,6 +5,8 @@ public class Graph {
     int nodeCount;
     int vertexes;
     Node []listOfNodes;
+    ArrayList<ArrayList<Integer>> fromList;
+    ArrayList<ArrayList<Integer>> toList;
     HashMap<String, Integer> listOfLandmarks;
     PriorityQueue<Node> pq;
 
@@ -216,5 +218,87 @@ public class Graph {
             bw.write(stringBuilder.toString());
         }
         bw.close();
+    }
+
+    public ArrayList<Node> runALT(Node s, Node e) throws IOException {
+        BufferedReader brf = new BufferedReader(
+                new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
+        readFromToFile(brf);
+        BufferedReader brt = new BufferedReader(
+                new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
+        readFromToFile(brt);
+
+        estimatedDistanceLE();
+        estimateDistanceNL();
+
+        return ALT(s, e);
+    }
+
+    public void makePrioALT(){
+        pq = new PriorityQueue<>((a,b) -> a.d.sumDist()-b.d.sumDist());
+    }
+
+    public void readFromToFile(BufferedReader br) throws IOException {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int numbOfLandmarks = Integer.parseInt(st.nextToken());
+        int numbOfNodes = Integer.parseInt(st.nextToken());
+        fromList = new ArrayList<>(numbOfLandmarks);
+
+        for (int i = 0; i < numbOfLandmarks; i++) {
+            st = new StringTokenizer(br.readLine());
+            ArrayList<Integer> ld = new ArrayList<>();
+            ld.add(Integer.parseInt(st.nextToken()));
+            for (int j = 0; j < numbOfNodes; j++) {
+               ld.add(Integer.parseInt(st.nextToken()));
+            }
+            fromList.add(ld);
+        }
+    }
+
+    public ArrayList<Node> ALT(Node s, Node e){
+        ArrayList<Node> visitedNodes = new ArrayList<>();
+        if (s != null){
+            initPrev(s);
+        }
+        makePrioALT();
+        distanceEstimate(s, e);
+        e.visited = true;
+        pq.add(s);
+
+        while (!this.pq.isEmpty()){
+            Node n = pq.poll();
+
+            if (n.visited) return visitedNodes;
+
+            visitedNodes.add(n);
+
+            for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
+                shortenALT(n, we, e);
+            }
+        }
+        return null;
+    }
+
+    public void shortenALT(Node n, Edge we, Node e){
+        Prev nd = n.d, md = we.to.d;
+
+        if (md.dist > nd.dist + we.weight){
+            distanceEstimate(we.to, e);
+            md.dist = nd.dist + we.weight;
+            md.prev = n;
+            this.pq.add(we.to);
+        }
+    }
+
+    public void estimatedDistanceLE(){
+
+    }
+
+    public void estimateDistanceNL(){
+
+    }
+
+    public void distanceEstimate(Node start, Node end){
+
     }
 }

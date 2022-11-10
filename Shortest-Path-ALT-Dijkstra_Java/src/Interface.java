@@ -24,6 +24,8 @@ public class Interface {
         //printDijkstra(nodeCount);
         //Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
         //printPOIDijkstra(visitedTypes);
+
+        //dGraph.runALT()
     }
 
     public static void printDijkstra(ArrayList<Node> nodes){
