@@ -83,6 +83,10 @@ public class Graph {
         }
     }
 
+    public void makePrio(){
+        pq = new PriorityQueue<Node>((a,b) -> (a.d.dist)-(b.d.dist));
+    }
+
     public ArrayList<Node> dijkstra(Node s, Node e){
         ArrayList<Node> visitedNodes = new ArrayList<>();
         if (s != null){
@@ -103,21 +107,6 @@ public class Graph {
             }
         }
         return null;
-    }
-
-    public void dijkstraPrePos(Node s){
-        if (s != null){
-            initPrev(s);
-        }
-        makePrio();
-        pq.add(s);
-
-        while (!this.pq.isEmpty()){
-            Node n = pq.poll();
-            for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
-                shorten(n, we);
-            }
-        }
     }
 
     public void initPrev(Node s){
@@ -163,7 +152,6 @@ public class Graph {
         return listOfTypeNods;
     }
 
-
     public void shorten(Node n, Edge we){
         Prev nd = n.d, md = we.to.d;
         if (md.dist > nd.dist + we.weight){
@@ -173,9 +161,28 @@ public class Graph {
         }
     }
 
-    public void makePrio(){
-        pq = new PriorityQueue<Node>((a,b) -> (a.d.dist)-(b.d.dist));
+    public void dijkstraPrePos(Node s){
+        if (s != null){
+            initPrev(s);
+        }
+        makePrio();
+        pq.add(s);
 
+        while (!this.pq.isEmpty()){
+            Node n = pq.poll();
+            for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
+                shorten(n, we);
+            }
+        }
+    }
+
+    public Node[] findThreePOI(){
+        Random rnd = new Random();
+        Node []POIList = new Node[3];
+        POIList[0] = listOfNodes[rnd.nextInt(listOfNodes.length)];
+        POIList[1] = listOfNodes[rnd.nextInt(listOfNodes.length)];
+        POIList[2] = listOfNodes[rnd.nextInt(listOfNodes.length)];
+        return POIList;
     }
 
     public void runPreProses(File engFile) throws IOException {
@@ -209,14 +216,5 @@ public class Graph {
         BufferedWriter bw = new BufferedWriter(fileWriter);
         bw.write(stringBuilder.toString());
         bw.close();
-    }
-
-    public Node[] findThreePOI(){
-        Random rnd = new Random();
-        Node []POIList = new Node[3];
-        POIList[0] = listOfNodes[rnd.nextInt(listOfNodes.length)];
-        POIList[1] = listOfNodes[rnd.nextInt(listOfNodes.length)];
-        POIList[2] = listOfNodes[rnd.nextInt(listOfNodes.length)];
-        return POIList;
     }
 }
