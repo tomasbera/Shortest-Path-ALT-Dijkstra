@@ -118,16 +118,6 @@ public class Graph {
         (s.d).dist = 0;
     }
 
-    public static  void runDijkstraPOI(Graph g, int s, int code){
-        Node[] arr = g.dijkstraPOI(g.listOfNodes[s], code);
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] != null){
-                System.out.println(arr[i].POI + " "
-                        + arr[i].nodeNum + " " + arr[i].code);
-            }
-        }
-    }
-
     public Node[] dijkstraPOI(Node s, int type){
         Node []listOfTypeNods = new Node[8];
         if (s != null){
@@ -263,10 +253,11 @@ public class Graph {
 
         while (!this.pq.isEmpty()){
             Node n = pq.poll();
-
-            if (n == e) return visitedNodes;
-
             visitedNodes.add(n);
+
+            if (n.visited){
+                return visitedNodes;
+            }
 
             for (Edge we = n.firstEdge; we != null; we = we.nextEdge){
                 shortenALT(n, we, e);
@@ -288,14 +279,12 @@ public class Graph {
 
     public int estimatedDistanceLE(int l, Node e, Node n){
         int estimate = (fromList.get(l).get(e.nodeNum) - (fromList.get(l).get(n.nodeNum)));
-        if (estimate < 0) return 0;
-        else return estimate;
+        return Math.max(estimate, 0);
     }
 
     public int estimateDistanceNL(int l, Node e, Node n){
         int estimate = (toList.get(l).get(n.nodeNum) - (toList.get(l).get(e.nodeNum)));
-        if (estimate < 0) return 0;
-        else return estimate;
+        return Math.max(estimate, 0);
     }
 
     public void distanceEstimate(Node n, Node e){

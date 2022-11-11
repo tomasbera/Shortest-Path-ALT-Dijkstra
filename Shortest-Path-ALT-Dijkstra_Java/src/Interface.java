@@ -19,17 +19,21 @@ public class Interface {
         Node start = dGraph.listOfNodes[93074];
         Node end = dGraph.listOfNodes[90235];
 
-        dGraph.runPreProses(edgeFile);
+
+        //dGraph.runPreProses(edgeFile);
         ArrayList<Node> nodeCount = dGraph.dijkstra(start, end);
         printGraph(nodeCount);
+        /*
         Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
         printPOIDijkstra(visitedTypes);
+         */
 
         ArrayList<Node> nodeCountALT = dGraph.runALT(start, end);
         printGraph(nodeCountALT);
     }
 
     public static void printGraph(ArrayList<Node> nodes){
+        System.out.println(nodes.get(nodes.size()-1).nodeNum);
         Node n = nodes.get(nodes.size()-1);
         while (n != null){
             System.out.println(n.latitude + "," + n.longitude);
