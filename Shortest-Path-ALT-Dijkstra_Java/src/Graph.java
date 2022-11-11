@@ -177,12 +177,12 @@ public class Graph {
         return POIList;
     }
 
-    public void runPreProses(File engFile) throws IOException {
+    public void runPreProses(File edgeFile) throws IOException {
         Node []preNodes;
         preNodes = findThreePOI();
-        readEdgesRev(engFile);
+        readEdgesRev(edgeFile);
         runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
-        readEdges(engFile);
+        readEdges(edgeFile);
         runToFile(preNodes, new File("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
     }
 
@@ -210,13 +210,17 @@ public class Graph {
     }
 
     public ArrayList<Node> runALT(Node s, Node e) throws IOException {
+        ArrayList<Node> visitedNodes = new ArrayList<>();
         BufferedReader brf = new BufferedReader(
                 new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
         fromList = readFromToFile(brf, fromList);
         BufferedReader brt = new BufferedReader(
                 new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
         toList = readFromToFile(brt, toList);
-        return ALT(s, e);
+        long start = System.nanoTime();
+        visitedNodes = ALT(s, e);
+        System.out.println("time used in milli: "+ (System.nanoTime() - start)/1000000);
+        return visitedNodes;
     }
 
     public void makePrioALT(){

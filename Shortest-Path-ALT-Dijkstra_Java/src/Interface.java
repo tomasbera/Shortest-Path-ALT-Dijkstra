@@ -19,21 +19,21 @@ public class Interface {
         Node start = dGraph.listOfNodes[93074];
         Node end = dGraph.listOfNodes[90235];
 
-
-        //dGraph.runPreProses(edgeFile);
+        long s = System.nanoTime();
         ArrayList<Node> nodeCount = dGraph.dijkstra(start, end);
+        System.out.println("time used in milli: "+ (System.nanoTime() - s)/1000000);
         printGraph(nodeCount);
-        /*
-        Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
-        printPOIDijkstra(visitedTypes);
-         */
+
+        //Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
+        //printPOIDijkstra(visitedTypes);
+        //dGraph.runPreProses(edgeFile);
+
 
         ArrayList<Node> nodeCountALT = dGraph.runALT(start, end);
         printGraph(nodeCountALT);
     }
 
     public static void printGraph(ArrayList<Node> nodes){
-        System.out.println(nodes.get(nodes.size()-1).nodeNum);
         Node n = nodes.get(nodes.size()-1);
         while (n != null){
             System.out.println(n.latitude + "," + n.longitude);
