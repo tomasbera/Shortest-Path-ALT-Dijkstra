@@ -94,7 +94,7 @@ public class Graph {
         if (s != null){
             initPrev(s);
         }
-        e.visited = true;
+        e.nodeFound();
         makePrio();
         pq.add(s);
 
@@ -142,7 +142,7 @@ public class Graph {
             if ((n.code == type) || n.code == 6) {
                 listOfTypeNods[count] = n;
                 count++;
-                n.visited = true;
+                n.nodeFound();
             }
 
             if (count == 8)break;
@@ -199,14 +199,13 @@ public class Graph {
     public void runToFile(Node[] preNodes, File outputFile) throws IOException {
         FileWriter fileWriter = new FileWriter(outputFile.getAbsolutePath());
         StringBuilder stringBuilder = new StringBuilder();
-        BufferedWriter bw = new BufferedWriter(fileWriter);
+        BufferedWriter bw;
         stringBuilder.append(preNodes.length);
         stringBuilder.append(" ");
         stringBuilder.append(nodeCount);
         stringBuilder.append("\n");
 
         for (Node preNode : preNodes) {
-            System.out.println(preNode.nodeNum);
             stringBuilder.append(preNode.nodeNum);
             dijkstraPrePos(preNode);
             for (int j = 0; j < nodeCount; j++) {
@@ -214,41 +213,42 @@ public class Graph {
                 stringBuilder.append(listOfNodes[j].d.dist);
             }
             stringBuilder.append("\n");
-            bw = new BufferedWriter(fileWriter);
-            bw.write(stringBuilder.toString());
         }
+        bw = new BufferedWriter(fileWriter);
+        bw.write(stringBuilder.toString());
         bw.close();
     }
 
     public ArrayList<Node> runALT(Node s, Node e) throws IOException {
         BufferedReader brf = new BufferedReader(
                 new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreFrom.txt"));
-        readFromToFile(brf);
+        fromList = readFromToFile(brf, fromList);
         BufferedReader brt = new BufferedReader(
                 new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
-        readFromToFile(brt);
+        toList = readFromToFile(brt, toList);
         return ALT(s, e);
     }
 
     public void makePrioALT(){
-        pq = new PriorityQueue<>((a,b) -> a.d.sumDist()-b.d.sumDist());
+        pq = new PriorityQueue<>((a,b) -> (a.d.sumDist()) - (b.d.sumDist()));
     }
 
-    public void readFromToFile(BufferedReader br) throws IOException {
+    public ArrayList<ArrayList<Integer>> readFromToFile(BufferedReader br, ArrayList<ArrayList<Integer>> fromToList) throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int numbOfLandmarks = Integer.parseInt(st.nextToken());
         int numbOfNodes = Integer.parseInt(st.nextToken());
-        fromList = new ArrayList<>(numbOfLandmarks);
+        fromToList = new ArrayList<>(numbOfLandmarks);
 
         for (int i = 0; i < numbOfLandmarks; i++) {
             st = new StringTokenizer(br.readLine());
             ArrayList<Integer> ld = new ArrayList<>();
-            ld.add(Integer.parseInt(st.nextToken()));
+            st.nextToken();
             for (int j = 0; j < numbOfNodes; j++) {
                ld.add(Integer.parseInt(st.nextToken()));
             }
-            fromList.add(ld);
+            fromToList.add(ld);
         }
+        return fromToList;
     }
 
     public ArrayList<Node> ALT(Node s, Node e){
@@ -258,13 +258,13 @@ public class Graph {
         }
         makePrioALT();
         distanceEstimate(s, e);
-        e.visited = true;
+        e.nodeFound();
         pq.add(s);
 
         while (!this.pq.isEmpty()){
             Node n = pq.poll();
 
-            if (n.visited) return visitedNodes;
+            if (n == e) return visitedNodes;
 
             visitedNodes.add(n);
 
@@ -279,7 +279,7 @@ public class Graph {
         Prev nd = n.d, md = we.to.d;
 
         if (md.dist > nd.dist + we.weight){
-            distanceEstimate(e, we.to);
+            distanceEstimate(we.to, e);
             md.dist = nd.dist + we.weight;
             md.prev = n;
             this.pq.add(we.to);
@@ -287,28 +287,23 @@ public class Graph {
     }
 
     public int estimatedDistanceLE(int l, Node e, Node n){
-        //(avstand fra L til end) - (avstand fra L til n)
         int estimate = (fromList.get(l).get(e.nodeNum) - (fromList.get(l).get(n.nodeNum)));
         if (estimate < 0) return 0;
         else return estimate;
     }
 
     public int estimateDistanceNL(int l, Node e, Node n){
-        //(avstand fra n til L) - (avstand fra end til L)
-        int estimate = (toList.get(l).get(n.nodeNum) - (fromList.get(l).get(e.nodeNum)));
+        int estimate = (toList.get(l).get(n.nodeNum) - (toList.get(l).get(e.nodeNum)));
         if (estimate < 0) return 0;
         else return estimate;
     }
 
-    public void distanceEstimate(Node n, Node end){
-        //beste av det to over blir n.prev sitt beste estimat
-        int estimatedDist = 0;
+    public void distanceEstimate(Node n, Node e){
         for (int i = 0; i < 3; i++) {
-            if (n.d.estimatedDistEnd < estimatedDistanceLE(i, end, n))
-                n.d.estimatedDistEnd = estimatedDistanceLE(i, end, n);
-
-            if (n.d.estimatedDistEnd < estimateDistanceNL(i, end, n))
-                n.d.estimatedDistEnd = estimateDistanceNL(i, end, n);
+            if (n.d.estimatedDistEnd < estimatedDistanceLE(i, e, n))
+                n.d.estimatedDistEnd = estimatedDistanceLE(i, e, n);
+            if (n.d.estimatedDistEnd < estimateDistanceNL(i, e, n))
+                n.d.estimatedDistEnd = estimateDistanceNL(i, e, n);
         }
     }
 }

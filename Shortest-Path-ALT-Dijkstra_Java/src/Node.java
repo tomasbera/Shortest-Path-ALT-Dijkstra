@@ -1,3 +1,8 @@
+//En node bør altså ha tre avstandsfelter: ett felt for avstand til start (som endrer seg underveis), et
+//estimat for avstand til mål (som bare beregnes én gang for hver node som legges i kø), og en sum
+//av de to første som prioritetskøen bruker for å finne beste node. Egentlig trengs ikke sum-feltet,
+//man kan ha en aksessmetode som legger sammen ved behov.
+
 public class Node {
     Edge firstEdge;
     Prev d;
@@ -32,19 +37,8 @@ public class Node {
         this.POI = POI;
     }
 
-    public void resetFound(){
-        this.visited = false;
-    }
-
     public void nodeFound(){
         this.visited = true;
-    }
-
-    public int compareTo(Node other){
-        Prev prev = this.d;
-        Prev newPrev = other.d;
-
-        return prev.dist-newPrev.dist;
     }
 
     @Override

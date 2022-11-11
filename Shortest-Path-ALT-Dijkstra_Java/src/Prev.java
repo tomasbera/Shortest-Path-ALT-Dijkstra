@@ -8,15 +8,5 @@ public class Prev {
         dist = inf;
     }
 
-    public int findDist(){
-        return dist;
-    }
-
-    public Node findPrev(){
-        return prev;
-    }
-
-    public int sumDist(){
-        return dist + estimatedDistEnd;
-    }
+    public int sumDist(){return dist + estimatedDistEnd;}
 }

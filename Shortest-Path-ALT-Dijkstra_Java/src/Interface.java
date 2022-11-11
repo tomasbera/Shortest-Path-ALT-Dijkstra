@@ -15,30 +15,36 @@ public class Interface {
         //2375652 fly thon hotel
         //4546048 trd torget
         //rejkavik kitchen 93074
-        //rejkavik hotel 1424
+        //rejkavik hotel 90235
         Node start = dGraph.listOfNodes[93074];
         Node end = dGraph.listOfNodes[90235];
 
         dGraph.runPreProses(edgeFile);
-        //ArrayList<Node> nodeCount = dGraph.dijkstra(start, end);
-        //printDijkstra(nodeCount);
-        //Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
-        //printPOIDijkstra(visitedTypes);
+        ArrayList<Node> nodeCount = dGraph.dijkstra(start, end);
+        printGraph(nodeCount);
+        Node[] visitedTypes = dGraph.dijkstraPOI(start, 8);
+        printPOIDijkstra(visitedTypes);
 
-        //dGraph.runALT()
+        ArrayList<Node> nodeCountALT = dGraph.runALT(start, end);
+        printGraph(nodeCountALT);
     }
 
-    public static void printDijkstra(ArrayList<Node> nodes){
+    public static void printGraph(ArrayList<Node> nodes){
+        Node n = nodes.get(nodes.size()-1);
+        while (n != null){
+            System.out.println(n.latitude + "," + n.longitude);
+            n = n.d.prev;
+        }
+
         System.out.println("The Number Of Nodes Visited was: " + nodes.size());
         System.out.println("The length from start to end is: "+ nodes.get(nodes.size()-1).d.dist);
-        for (Node node : nodes) {
-            System.out.println(node.toString());
-        }
+        System.out.println();
     }
 
     public static void printPOIDijkstra(Node[] poi){
         for (Node node : poi) {
-            System.out.println("Distance to " + node.nodeNum + " was: " + node.d.dist);
+            System.out.println("Distance to " + node.POI + " was: " + node.d.dist);
         }
+        System.out.println();
     }
 }
