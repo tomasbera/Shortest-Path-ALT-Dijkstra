@@ -227,10 +227,6 @@ public class Graph {
         BufferedReader brt = new BufferedReader(
                 new FileReader("Shortest-Path-ALT-Dijkstra/Shortest-Path-ALT-Dijkstra_Java/PreTo.txt"));
         readFromToFile(brt);
-
-        estimatedDistanceLE();
-        estimateDistanceNL();
-
         return ALT(s, e);
     }
 
@@ -283,22 +279,36 @@ public class Graph {
         Prev nd = n.d, md = we.to.d;
 
         if (md.dist > nd.dist + we.weight){
-            distanceEstimate(we.to, e);
+            distanceEstimate(e, we.to);
             md.dist = nd.dist + we.weight;
             md.prev = n;
             this.pq.add(we.to);
         }
     }
 
-    public void estimatedDistanceLE(){
-
+    public int estimatedDistanceLE(int l, Node e, Node n){
+        //(avstand fra L til end) - (avstand fra L til n)
+        int estimate = (fromList.get(l).get(e.nodeNum) - (fromList.get(l).get(n.nodeNum)));
+        if (estimate < 0) return 0;
+        else return estimate;
     }
 
-    public void estimateDistanceNL(){
-
+    public int estimateDistanceNL(int l, Node e, Node n){
+        //(avstand fra n til L) - (avstand fra end til L)
+        int estimate = (toList.get(l).get(n.nodeNum) - (fromList.get(l).get(e.nodeNum)));
+        if (estimate < 0) return 0;
+        else return estimate;
     }
 
-    public void distanceEstimate(Node start, Node end){
+    public void distanceEstimate(Node n, Node end){
+        //beste av det to over blir n.prev sitt beste estimat
+        int estimatedDist = 0;
+        for (int i = 0; i < 3; i++) {
+            if (n.d.estimatedDistEnd < estimatedDistanceLE(i, end, n))
+                n.d.estimatedDistEnd = estimatedDistanceLE(i, end, n);
 
+            if (n.d.estimatedDistEnd < estimateDistanceNL(i, end, n))
+                n.d.estimatedDistEnd = estimateDistanceNL(i, end, n);
+        }
     }
 }
